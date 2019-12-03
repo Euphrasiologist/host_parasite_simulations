@@ -1,0 +1,13 @@
+Package: HoPaSim
+Title: Simulating and modelling host parasite interactions, with an emphasis on plant hemiparasites.
+Version: 0.1.0
+Authors@R: person("Max", "Brown", email = "max.brown@ed.ac.uk", role = c("aut", "cre"))
+Description: Create simulations, using simple functions to interrogate real world phenomena.
+Depends: R(>= 3.5.1)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports:
+  data.table,
+  ggplot2
