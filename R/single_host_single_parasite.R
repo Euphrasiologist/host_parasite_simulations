@@ -14,7 +14,10 @@
 
 onehost_oneparasite <- function(field.size = 5^2, s = 1, host.number = 5, parasite.number = 5, gens = 100){
   fz <- field.size
-  if(dim(fz)[1] != dim(fz)[2]){
+  # is whole number function
+  is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
+  
+  if(!is.wholenumber(sqrt(fz))){
     stop("Field size should be a square!")
   }
   # create a sample of host
