@@ -1,7 +1,7 @@
 ---
 title: "Simulating host parasite dynamics"
 author: "Max R Brown"
-date: Sys.Date()
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 
 ---
