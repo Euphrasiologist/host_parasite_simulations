@@ -85,11 +85,11 @@ sim1.2 <- setDT(sim1[[1]])
 head(sim1.2)
 #>    generation P.size
 #> 1:          1     20
-#> 2:          2     10
-#> 3:          3     15
-#> 4:          4     20
+#> 2:          2     18
+#> 3:          3     23
+#> 4:          4     26
 #> 5:          5     31
-#> 6:          6     43
+#> 6:          6     41
 ```
 
 A plot can then be generated using the
@@ -107,112 +107,28 @@ the upper limit of 400 as this is the number of host plants I seeded the
 field with.
 
 This example can be easily replicated many times using the function
-`onehost_oneparasite_dynamics()`.
+`onehost_oneparasite_dynamics()`, with an extra parameter argument,
+reps, which can be used to specify the number of replicate simulations
+to use.
 
 ``` r
 # use same parameters as above
-sim2 <- HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100, reps = 30)
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
+sim2 <- suppressWarnings(HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100, reps = 30))
+head(sim2)
+#>    generation P.size rep
+#> 1:          1     20   1
+#> 2:          2     12   1
+#> 3:          3     15   1
+#> 4:          4     19   1
+#> 5:          5     26   1
+#> 6:          6     31   1
 
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
-#> number of items to replace is not a multiple of replacement length
-
-sim2
-#>       generation P.size rep
-#>    1:          1     20   1
-#>    2:          2     14   1
-#>    3:          3     21   1
-#>    4:          4     27   1
-#>    5:          5     37   1
-#>   ---                      
-#> 2996:         96    400  30
-#> 2997:         97    400  30
-#> 2998:         98    400  30
-#> 2999:         99    400  30
-#> 3000:        100    400  30
+ggplot(sim2, aes(x = generation, y = P.size))+geom_line(aes(group = rep)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+From this, it is easy to see that there is certainly variability
+associated with this simulation, but they are all roughly doing a
+similar thing. The driving engine for the simulations is the R function
+`sample`, and this is causing the variability.

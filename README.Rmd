@@ -72,7 +72,6 @@ sim2 <- suppressWarnings(HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2
 head(sim2)
 
 ggplot(sim2, aes(x = generation, y = P.size))+geom_line(aes(group = rep)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
-
 ```
 
 From this, it is easy to see that there is certainly variability associated with this simulation, but they are all roughly doing a similar thing. The driving engine for the simulations is the R function `sample`, and this is causing the variability.
