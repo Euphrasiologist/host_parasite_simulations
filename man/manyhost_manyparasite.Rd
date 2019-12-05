@@ -4,11 +4,11 @@
 \alias{manyhost_manyparasite}
 \title{Many hosts, many parasites simulation.}
 \usage{
-manyhost_manyparasite(field.size = 100^2,
-  interaction.matrix = matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9), 3, 3,
+manyhost_manyparasite(field.size = 10^2,
+  interaction.matrix = matrix(c(1, 1, 1, 2, 2, 2, 3, 3, 3), 3, 3,
   dimnames = list(c("Host 1", "Host 2", "Host 3"), c("Parasite 1",
-  "Parasite 2", "Parasite 3"))), host.number = c(3000, 3000, 3000),
-  parasite.number = c(1, 1, 1), gens = 100)
+  "Parasite 2", "Parasite 3"))), host.number = c(10, 10, 10),
+  parasite.number = c(5, 5, 5), gens = 100)
 }
 \arguments{
 \item{field.size}{size of host parasite matrix to play on. Must be square.}

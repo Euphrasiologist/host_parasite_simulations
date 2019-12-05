@@ -28,14 +28,18 @@
 #'    gens = 100)
 
 
-manyhost_manyparasite <- function(field.size = 100^2, 
-                                  interaction.matrix = matrix(c(1,2,3,4,5,6,7,8,9), 3, 3, dimnames = list(c("Host 1", "Host 2", "Host 3"), c("Parasite 1", "Parasite 2", "Parasite 3"))), 
-                                  host.number = c(3000, 3000, 3000), 
-                                  parasite.number = c(1, 1, 1), 
+manyhost_manyparasite <- function(field.size = 10^2, 
+                                  interaction.matrix = matrix(c(1,1,1,2,2,2,3,3,3), 3, 3, dimnames = list(c("Host 1", "Host 2", "Host 3"), c("Parasite 1", "Parasite 2", "Parasite 3"))), 
+                                  host.number = c(10,10,10), 
+                                  parasite.number = c(5,5,5), 
                                   gens = 100){
   if(dim(interaction.matrix)[1] != length(host.number | dim(interaction.matrix)[2] != length(parasite.number))){
     stop("Please check that interaction matrix and numbers of each host and parasite are compatible.")
   }
+  if(sum(host.number) > field.size | sum(parasite.number) > field.size){
+    stop("Too many hosts or parasites for the size of field!")
+  }
+  
   fz <- field.size
   # create a sample of host, with a number of hosts each with s
   host <- sample(x = c(rep(0,fz-sum(host.number)), rep(1:dim(interaction.matrix)[1], host.number)), size = fz, replace = FALSE)
@@ -48,9 +52,9 @@ manyhost_manyparasite <- function(field.size = 100^2,
   
   # fill the distribution of parasites at each generation
   mats <- list()
-  # a list of the size of the parasite for next generation
+  # a breakdown of the number of parasites on each host per generation
   sz <- list()
-  # realised population sizes
+  # total population sizes of each parasite per generation
   pz <- list()
   # table with breakdown of all euphrasia-host interactions
   
@@ -83,17 +87,36 @@ manyhost_manyparasite <- function(field.size = 100^2,
     mat2$Pop.size <- as.numeric(mat2$Pop.size)
     mat2$gens <- as.factor(j)
     
-    mats[[j]] <- matrix(data = sample(x = c(rep(1:dim(interaction.matrix)[2], sum(mat2$Pop.size)), 
-                                            rep(0, fz- ifelse(test = sum(mat2$Pop.size) >fz, yes = fz, no = sum(mat2$Pop.size)))), 
+    # so mat2 contains the reproductive output of parasite from host-parasite interaction
+    # get the total population size for different host-parasite interactions.
+    # save the host parasite interaction numbers per generation
+    mat3 <- mat2[, .(Pop.size.total = sum(Pop.size)), by = .(Host.parasite, gens)]
+    # save in sz
+    sz[[j]] <- mat3
+    # but we also want total parasite number per generation
+    mat4 <- mat3[, .(Host.parasite = gsub(".*, ", "", Host.parasite), gens, Pop.size.total)][, .(Total.parasite.number = sum(Pop.size.total)), by = .(Host.parasite, gens)][order(Host.parasite)]
+    mat4$Host.parasite <- as.factor(mat4$Host.parasite)
+    # save this
+    pz[[j]] <- mat4
+    
+    # early on in iterations a parasite may have died out, and therefore this rep() command below will throw an error
+    if(length(colnames(interaction.matrix)) != length(levels(mat4$Host.parasite))){
+      # find the difference in levels
+      diffs <- setdiff(colnames(interaction.matrix),levels(mat4$Host.parasite))
+      add <- data.table(Host.parasite = diffs, gens = j, Total.parasite.number = 0)
+      mat4 <- rbind(mat4, add)
+    }
+    
+    # what is this?
+    mats[[j]] <- matrix(data = sample(x = c(rep(x = 1:dim(interaction.matrix)[2], times = as.numeric(mat4$Total.parasite.number)), 
+                                            rep(0, fz- ifelse(test = sum(mat4$Total.parasite.number) >fz, yes = fz, no = sum(mat4$Total.parasite.number)))), 
                                       size = fz, replace = FALSE), 
                         nrow = sqrt(fz), ncol = sqrt(fz), byrow = TRUE) 
-    
-    sz[[j]] <- mat2
-    pz[[j]] <- as.data.table(table(mats[[j]]))[, rep := j]
   }
-  res<-rbindlist(pz)
-  colnames(res) <- c("Parasite", "Population size", "Generation")
-  list(res[Parasite > 0], sz)
+  res<-rbindlist(sz)
+  colnames(res) <- c("Host-Parasite", "Generation", "Population Size")
+  res2<-rbindlist(pz) 
+  colnames(res2) <- c("Parasite", "Generation", "Population Size")
   
-  # TODO: would be nice to output parasite pop size on each host... how?
+  return(list(res, res2))
 }
