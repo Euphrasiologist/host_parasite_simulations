@@ -63,3 +63,16 @@ ggplot(sim1.2, aes(x = generation, y = P.size))+geom_line() + theme_bw() + xlab(
 ```
 
 For these parameters under this model, the parasite sweeps rapidly to parasitise every possible host in about 20 generations. It is capped at the upper limit of 400 as this is the number of host plants I seeded the field with.
+
+This example can be easily replicated many times using the function `onehost_oneparasite_dynamics()`, with an extra parameter argument, reps, which can be used to specify the number of replicate simulations to use.
+
+```{r}
+# use same parameters as above
+sim2 <- suppressWarnings(HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100, reps = 30))
+head(sim2)
+
+ggplot(sim2, aes(x = generation, y = P.size))+geom_line(aes(group = rep)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
+
+```
+
+From this, it is easy to see that there is certainly variability associated with this simulation, but they are all roughly doing a similar thing. The driving engine for the simulations is the R function `sample`, and this is causing the variability.

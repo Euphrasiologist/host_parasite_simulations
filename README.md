@@ -85,10 +85,10 @@ sim1.2 <- setDT(sim1[[1]])
 head(sim1.2)
 #>    generation P.size
 #> 1:          1     20
-#> 2:          2     13
-#> 3:          3     18
-#> 4:          4     26
-#> 5:          5     40
+#> 2:          2     10
+#> 3:          3     15
+#> 4:          4     20
+#> 5:          5     31
 #> 6:          6     43
 ```
 
@@ -105,3 +105,114 @@ For these parameters under this model, the parasite sweeps rapidly to
 parasitise every possible host in about 20 generations. It is capped at
 the upper limit of 400 as this is the number of host plants I seeded the
 field with.
+
+This example can be easily replicated many times using the function
+`onehost_oneparasite_dynamics()`.
+
+``` r
+# use same parameters as above
+sim2 <- HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100, reps = 30)
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+#> Warning in replicates[i] <- onehost_oneparasite(field.size = field.size, :
+#> number of items to replace is not a multiple of replacement length
+
+sim2
+#>       generation P.size rep
+#>    1:          1     20   1
+#>    2:          2     14   1
+#>    3:          3     21   1
+#>    4:          4     27   1
+#>    5:          5     37   1
+#>   ---                      
+#> 2996:         96    400  30
+#> 2997:         97    400  30
+#> 2998:         98    400  30
+#> 2999:         99    400  30
+#> 3000:        100    400  30
+```
