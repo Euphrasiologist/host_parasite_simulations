@@ -43,14 +43,15 @@ manyhost_oneparasite <- function(field.size = 5^2, s = c(1,2,3), host.number = c
   # i == two empty spaces to fill, one for distribution of parasites
   mats <- list()
   # one for
-  sz <- vector(length = gens)
+  sz <- list()
   
   for(i in 2:gens){
     # starting population of Euphrasia
     mats[[1]]<- P
-    sz[1] <- sum(P)
-    # multiply Euphrasia matrix by host matrix
-    #mats[[i]] <- mats[[i-1]]*h1
+    # why sum P here?
+    sz[[1]] <- sum(P)
+    # we want the 
+    
     # total number of Euphrasia in t+1
     sz[i] <- sum(mats[[i-1]]*H)
     # generate random matrix of Euphrasia with n(t+1) from the sum of elements in mat[[i-1]] (all 1's)
@@ -63,4 +64,5 @@ manyhost_oneparasite <- function(field.size = 5^2, s = c(1,2,3), host.number = c
                  Spatial.structure = mats, 
                  Host.matrix = H)
   output
+  # function discontinued.
 }

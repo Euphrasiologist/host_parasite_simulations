@@ -14,6 +14,7 @@
 #' @param parasite.number number of parasites to seed the matrix with.
 #' @param gens number of generations to run the model for.
 #' @return a list of the parasite dynamics, spatial structure and the host matrix?
+#' @importFrom data.table rbindlist
 #' @export
 #' @examples
 #' # need ggplot
