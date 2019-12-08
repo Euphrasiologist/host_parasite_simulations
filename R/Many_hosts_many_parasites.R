@@ -36,6 +36,7 @@ manyhost_manyparasite <- function(field.size = 10^2,
                                   host.number = c(10,10,10), 
                                   parasite.number = c(5,5,5), 
                                   gens = 100){
+  
   if(dim(interaction.matrix)[1] != length(host.number) | dim(interaction.matrix)[2] != length(parasite.number)){
     stop("Please check that interaction matrix and numbers of each host and parasite are compatible.")
   }
@@ -137,19 +138,32 @@ manyhost_manyparasite <- function(field.size = 10^2,
         }
     } else
       
-      # More than one parasite and one host.
+      # little worried about whether this bit makes sense?
+      # More than one parasite and one host. Can we generalise this to
       if(ncol(interaction.matrix) > 1 & nrow(interaction.matrix) > 1){
         # for switch argument later
         type <- 3
       for(i in 1:dim(select)[1]){
         # if there is no host parasite co-incidence
-        if(length(interaction.matrix[select[i,1], select[i,2]]) == 0){
+        if(select[i,1] == 0 | select[i,2] == 0){
           Pop.size[i] <- 0
+          Host.parasite[i] <- as.character("")
         } else
-          # population size is the value in the interaction matrix
-          Pop.size[i]<-interaction.matrix[select[i,1], select[i,2]]
-        
-        Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,1], select[i,2], drop = FALSE])), collapse = ", ")
+          # if there are more parasites than hosts
+          if(ncol(interaction.matrix) > nrow(interaction.matrix) | ncol(interaction.matrix) < nrow(interaction.matrix)){
+            # population size is the value in the interaction matrix
+            Pop.size[i]<-interaction.matrix[select[i,2], select[i,1]]
+            # name of the host parasite pair
+            Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,2], select[i,1], drop = FALSE])), collapse = ", ")
+          } else
+            # if there are more hosts than parasites
+            if(ncol(interaction.matrix) == nrow(interaction.matrix)){
+              # population size is the value in the interaction matrix
+              Pop.size[i]<-interaction.matrix[select[i,1], select[i,2]]
+              # name of the host parasite pair
+              Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,1], select[i,2], drop = FALSE])), collapse = ", ")
+            }
+          
       }
     }
     
@@ -194,8 +208,11 @@ manyhost_manyparasite <- function(field.size = 10^2,
                   rep(0, fz - ifelse(test = sum(mat4$Total.parasite.number) > fz, yes = fz, no = sum(mat4$Total.parasite.number))))
         
     mats[[j]] <- matrix(data = sample(x = para.int, 
-                                      size = fz, replace = FALSE), 
-                        nrow = sqrt(fz), ncol = sqrt(fz), byrow = TRUE) 
+                                      size = fz, 
+                                      replace = FALSE), 
+                        nrow = sqrt(fz), 
+                        ncol = sqrt(fz), 
+                        byrow = TRUE) 
   }
   res<-rbindlist(sz)
   colnames(res) <- c("Host-Parasite", "Generation", "Population Size")
@@ -203,5 +220,10 @@ manyhost_manyparasite <- function(field.size = 10^2,
   colnames(res2) <- c("Parasite", "Generation", "Population Size")
   res3 <- rbindlist(pop.size)
   
-  return(list(Reprod.Para.Host = res, Reprod.Para = res2, Pop.Size.Para = res3))
+  output <- list(Reprod.Para.Host = res, 
+                 Reprod.Para = res2,
+                 Pop.Size.Para = res3)
+  
+  class(output)<-c("HoPaSim")
+  output
 }
