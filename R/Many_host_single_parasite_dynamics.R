@@ -32,4 +32,5 @@ manyhost_oneparasite_dynamics <- function(field.size = 100^2, s = c(0,0,0,0,0,5,
   res <- rbindlist(l = replicates)
   res$rep <- as.factor(rep(1:reps, each = gens))
   res
+  # function discontinued
 }
