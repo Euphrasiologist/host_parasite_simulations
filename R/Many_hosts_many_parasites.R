@@ -27,13 +27,6 @@
 #'    parasite.number = c(1, 1, 1), 
 #'    gens = 100)
 
-# something is very wrong with the single host many parasite model in this. Population sizes seem to be greater than
-# the size of the grid...
-# still something dodgey going on...
-
-# something is wrong here, population size needs to be calculated after
-# having landed on a host...
-
 manyhost_manyparasite <- function(field.size, 
                                   interaction.matrix, 
                                   host.number, 
@@ -158,20 +151,21 @@ manyhost_manyparasite <- function(field.size,
       if(ncol(interaction.matrix) > 1 & nrow(interaction.matrix) > 1){
         # for switch argument later
         type <- 3
+        
       for(i in 1:dim(select)[1]){
         # if there is no host parasite co-incidence
         if(select[i,1] == 0 | select[i,2] == 0){
           Pop.size[i] <- 0
           Host.parasite[i] <- as.character("")
         } else
-          # if there are more parasites than hosts
+          # if there are more parasites than hosts or more hosts than parasites
           if(ncol(interaction.matrix) > nrow(interaction.matrix) | ncol(interaction.matrix) < nrow(interaction.matrix)){
             # population size is the value in the interaction matrix
             Pop.size[i]<-interaction.matrix[select[i,2], select[i,1]]
             # name of the host parasite pair
             Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,2], select[i,1], drop = FALSE])), collapse = ", ")
           } else
-            # if there are more hosts than parasites
+            # if number of hosts is equal to number of parasites
             if(ncol(interaction.matrix) == nrow(interaction.matrix)){
               # population size is the value in the interaction matrix
               Pop.size[i]<-interaction.matrix[select[i,1], select[i,2]]
@@ -239,6 +233,6 @@ manyhost_manyparasite <- function(field.size,
                  Reprod.Para = res2,
                  Pop.Size.Para = res3)
   
-  class(output)<-c("HoPaSim")
+  class(output) <- c("HoPaSim")
   output
 }
