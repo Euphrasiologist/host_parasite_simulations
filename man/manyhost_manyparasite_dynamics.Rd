@@ -2,13 +2,10 @@
 % Please edit documentation in R/Many_hosts_many_parasites_dynamics.R
 \name{manyhost_manyparasite_dynamics}
 \alias{manyhost_manyparasite_dynamics}
-\title{Many hosts, many parasites simulation.}
+\title{Many hosts, many parasites simulation replicates}
 \usage{
-manyhost_manyparasite_dynamics(field.size = 100^2,
-  interaction.matrix = matrix(c(1, 1, 2, 2), 2, 2, dimnames =
-  list(c("Host 1", "Host 2"), c("Parasite 1", "Parasite 2"))),
-  host.number = c(2000, 2000), parasite.number = c(1, 1), gens = 100,
-  reps = 5)
+manyhost_manyparasite_dynamics(field.size, interaction.matrix, host.number,
+  parasite.number, gens, reps)
 }
 \arguments{
 \item{field.size}{size of host parasite matrix to play on. Must be square.}
@@ -27,9 +24,7 @@ manyhost_manyparasite_dynamics(field.size = 100^2,
 a list of the parasite dynamics, spatial structure and the host matrix?
 }
 \description{
-Take a host grid containing a number of hosts with some benefit to the parasite (randomly spaced, but fixed).
-Then overlay a parasite grid contaning some parasites (randomly spaced).
-If hosts and parasites co-occur, the parasite will reproduce. Cumulative offspring then randomly overlaid on grid.
+A simple wrapper function to replicate the simulations of the function manyhost_manyparasite().
 }
 \details{
 Model assumes (1) that hosts are fixed in position and perennial, and are unaffected by parasitism.
@@ -44,7 +39,7 @@ int.mat <- matrix(c(1,1,2,2), 2, 2, dimnames = list(c("C.cristatus", "L.cornicul
 sim <- manyhost_manyparasite_dynamics(field.size = 100^2, 
    interaction.matrix = int.mat, 
    host.number = c(3000, 3000), 
-   parasite.number = c(1, 1), 
+   parasite.number = c(100, 300), 
    gens = 100, 
    reps = 10)
 

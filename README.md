@@ -1,7 +1,7 @@
 Simulating host parasite dynamics
 ================
 Max R Brown
-08 December, 2019
+09 December, 2019
 
 I am completely new to modelling host-parasite dynamics. I just thought
 it would be interesting to do, as I have been investigating this with
@@ -73,32 +73,34 @@ measured in terms of offspring that survive to maturity in the next
 generation if you land on the host, number of host individuals and
 number of parasites. Number of generations can also be specified.
 
-The output is extremely verbose, as each iteration of the spatial matrix
-structure is saved \[maybe change this?\]. The interesting part is
-probably the first slot in the output, accessed as shown below, which
-saves population sizes over time
+In each run, there are three slots. The first describes the reproductive
+output of each parasite species on each host, the second the parasite
+reproductive output only across all hosts and lastly the realised
+population size of each parasite species.
 
 ``` r
 library(data.table); library(ggplot2)
-sim1 <- HoPaSim::onehost_oneparasite(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100)
 
-sim1.2 <- setDT(sim1[[1]])
+sim1 <- manyhost_manyparasite(field.size = 25^2, interaction.matrix = matrix(3, 1, 1, dimnames = list("Host 1", "Parasite 1")), host.number = 400, parasite.number = 20, gens = 100)
+
+# third slot is the population sizes of the parasite
+sim1.2 <- setDT(sim1[[3]])
 
 head(sim1.2)
-#>    generation P.size
-#> 1:          1     20
-#> 2:          2     15
-#> 3:          3     12
-#> 4:          4     13
-#> 5:          5     14
-#> 6:          6     19
+#>    Population Size   Parasite Generation
+#> 1:              15 Parasite 1          1
+#> 2:              36 Parasite 1          2
+#> 3:              72 Parasite 1          3
+#> 4:             139 Parasite 1          4
+#> 5:             260 Parasite 1          5
+#> 6:             400 Parasite 1          6
 ```
 
 A plot can then be generated using the
 data.
 
 ``` r
-ggplot(sim1.2, aes(x = generation, y = P.size))+geom_line() + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
+ggplot(sim1.2, aes(x = Generation, y = `Population Size`))+geom_line() + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -107,33 +109,6 @@ For these parameters under this model, the parasite sweeps rapidly to
 parasitise every possible host in about 20 generations. It is capped at
 the upper limit of 400 as this is the number of host plants I seeded the
 field with.
-
-This example can be easily replicated many times using the function
-`onehost_oneparasite_dynamics()`, with an extra parameter argument,
-reps, which can be used to specify the number of replicate simulations
-to use.
-
-``` r
-# use same parameters as above
-sim2 <- suppressWarnings(HoPaSim::onehost_oneparasite_dynamics(field.size = 25^2, s = 2, host.number = 400, parasite.number = 20, gens = 100, reps = 30))
-head(sim2)
-#>    generation P.size rep
-#> 1:          1     20   1
-#> 2:          2     20   1
-#> 3:          3     30   1
-#> 4:          4     36   1
-#> 5:          5     49   1
-#> 6:          6     62   1
-
-ggplot(sim2, aes(x = generation, y = P.size))+geom_line(aes(group = rep)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-
-From this, it is easy to see that there is certainly variability
-associated with this simulation, but they are all roughly doing a
-similar thing. The driving engine for the simulations is the R function
-`sample`, and this is causing the variability.
 
 ### Multiple host single parasite system
 
@@ -154,7 +129,7 @@ sim3 <- manyhost_manyparasite(field.size = 25^2, interaction.matrix = int.mat, h
 ggplot(sim3[[1]], aes(x = as.numeric(Generation), y = `Population Size`, group = `Host-Parasite`))+ geom_line(aes(colour = `Host-Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 In this example, the vector of selection coefficients is different for
 each parasite on a different host. Because the hosts fill the grid
@@ -174,15 +149,14 @@ int.mat <- matrix(c(10,9,9), 1, 3, dimnames = list(c("Host 1"), c("Parasite 1", 
 sim4 <- manyhost_manyparasite(field.size = 40^2, interaction.matrix = int.mat, host.number = c(1000), parasite.number = c(200,200,200), gens = 100)
 
 ggplot(sim4$Pop.Size.Para, aes(x = as.numeric(Generation), y = `Population Size`, group = `Parasite`))+ geom_line(aes(colour = `Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
-#> Warning: Removed 52 rows containing missing values (geom_path).
+#> Warning: Removed 93 rows containing missing values (geom_path).
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 In this simulation, we see that relatively minor differences in fitness
 of different parasites on the same host will lead to one parasite
-sweeping to fixation. Does anyone know why there are breaks in the
-lines?
+sweeping to fixation.
 
 ### Multiple parasites, multiple hosts
 
@@ -203,6 +177,6 @@ sim5 <- manyhost_manyparasite(field.size = 60^2, interaction.matrix = int.mat, h
 ggplot(sim5$Pop.Size.Para, aes(x = as.numeric(Generation), y = `Population Size`, group = `Parasite`))+ geom_line(aes(colour = `Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Giving high specialism for each parasite, allows coexistence.

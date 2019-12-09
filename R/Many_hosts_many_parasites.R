@@ -31,17 +31,29 @@
 # the size of the grid...
 # still something dodgey going on...
 
-manyhost_manyparasite <- function(field.size = 10^2, 
-                                  interaction.matrix = matrix(c(1,1,1,2,2,2,3,3,3), 3, 3, dimnames = list(c("Host 1", "Host 2", "Host 3"), c("Parasite 1", "Parasite 2", "Parasite 3"))), 
-                                  host.number = c(10,10,10), 
-                                  parasite.number = c(5,5,5), 
-                                  gens = 100){
-  
+# something is wrong here, population size needs to be calculated after
+# having landed on a host...
+
+manyhost_manyparasite <- function(field.size, 
+                                  interaction.matrix, 
+                                  host.number, 
+                                  parasite.number, 
+                                  gens){
+  # housekeeping
+  if(sqrt(field.size) %% 1 != 0){
+    stop("Field size should be square")
+    }
+  if(!is.matrix(interaction.matrix)){
+    stop("Interaction matrix should be a matrix")
+  }
   if(dim(interaction.matrix)[1] != length(host.number) | dim(interaction.matrix)[2] != length(parasite.number)){
     stop("Please check that interaction matrix and numbers of each host and parasite are compatible.")
   }
   if(sum(host.number) > field.size | sum(parasite.number) > field.size){
     stop("Too many hosts or parasites for the size of field!")
+  }
+  if(is.null(dimnames(interaction.matrix))){
+    stop("The interaction matrix should have rownames and colnames")
   }
   
   fz <- field.size
@@ -49,6 +61,8 @@ manyhost_manyparasite <- function(field.size = 10^2,
   host <- sample(x = c(rep(0,fz-sum(host.number)), rep(1:dim(interaction.matrix)[1], host.number)), size = fz, replace = FALSE)
   # spatial distribution of hosts
   H <- matrix(host, sqrt(fz), sqrt(fz))
+  # and presence/absence of hosts
+  Hbin <- as.matrix((H > 0) + 0)
   
   # parasite matrix
   P <- sample(x = c(rep(0,fz-sum(parasite.number)), rep(1:dim(interaction.matrix)[2], parasite.number)), size = fz, replace = FALSE)
@@ -72,7 +86,7 @@ manyhost_manyparasite <- function(field.size = 10^2,
   
   for(j in 2:gens){
     
-    # starting population of Euphrasia
+    # starting population of parasite
     mats[[1]] <- P
     
         ###################################
@@ -80,7 +94,8 @@ manyhost_manyparasite <- function(field.size = 10^2,
         ###################################
     
     # get pop sizes from generation 1 onwards
-    gpop <- as.data.table(table(mats[[j-1]]))
+    # multiply by binary host presence matrix??
+    gpop <- as.data.table(table(mats[[j-1]]*Hbin))
     # rename the table
     setnames(x = gpop, old = c("V1", "N"), new = c("match", "Population Size"))
     # match on the names from the 

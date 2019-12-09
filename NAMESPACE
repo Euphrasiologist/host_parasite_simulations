@@ -2,9 +2,4 @@
 
 export(manyhost_manyparasite)
 export(manyhost_manyparasite_dynamics)
-export(manyhost_oneparasite)
-export(manyhost_oneparasite_dynamics)
-export(onehost_oneparasite)
-export(onehost_oneparasite_dynamics)
 import(data.table)
-importFrom(data.table,rbindlist)

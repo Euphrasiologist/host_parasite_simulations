@@ -1,9 +1,6 @@
-#' Many hosts, many parasites simulation.
+#' Many hosts, many parasites simulation replicates
 #' 
-#' Take a host grid containing a number of hosts with some benefit to the parasite (randomly spaced, but fixed).
-#' Then overlay a parasite grid contaning some parasites (randomly spaced).
-#' If hosts and parasites co-occur, the parasite will reproduce. Cumulative offspring then randomly overlaid on grid.
-#' 
+#' A simple wrapper function to replicate the simulations of the function manyhost_manyparasite().
 #' 
 #' @details Model assumes (1) that hosts are fixed in position and perennial, and are unaffected by parasitism.
 #'   (2) no effect on parasite of nearby hosts, (3) parasites seed randomly over the field, (4) all parasites survive to end of generation,
@@ -25,18 +22,34 @@
 #' sim <- manyhost_manyparasite_dynamics(field.size = 100^2, 
 #'    interaction.matrix = int.mat, 
 #'    host.number = c(3000, 3000), 
-#'    parasite.number = c(1, 1), 
+#'    parasite.number = c(100, 300), 
 #'    gens = 100, 
 #'    reps = 10)
 #' 
 #' examples to come...
 
-manyhost_manyparasite_dynamics <- function(field.size = 100^2, 
-                                           interaction.matrix = matrix(c(1,1,2,2), 2, 2, dimnames = list(c("Host 1", "Host 2"), c("Parasite 1", "Parasite 2"))), 
-                                           host.number = c(2000, 2000), 
-                                           parasite.number = c(1, 1), 
-                                           gens = 100, 
-                                           reps = 5){
+manyhost_manyparasite_dynamics <- function(field.size, 
+                                           interaction.matrix, 
+                                           host.number, 
+                                           parasite.number, 
+                                           gens, 
+                                           reps){
+  # housekeeping
+  if(sqrt(field.size) %% 1 != 0){
+    stop("Field size should be square")
+  }
+  if(!is.matrix(interaction.matrix)){
+    stop("Interaction matrix should be a matrix")
+  }
+  if(dim(interaction.matrix)[1] != length(host.number) | dim(interaction.matrix)[2] != length(parasite.number)){
+    stop("Please check that interaction matrix and numbers of each host and parasite are compatible.")
+  }
+  if(sum(host.number) > field.size | sum(parasite.number) > field.size){
+    stop("Too many hosts or parasites for the size of field!")
+  }
+  if(is.null(dimnames(interaction.matrix))){
+    stop("The interaction matrix should have rownames and colnames")
+  }
   # add in the replicates to a blank list
   replicates <- list()
   for(i in 1:reps){
@@ -45,16 +58,18 @@ manyhost_manyparasite_dynamics <- function(field.size = 100^2,
                                              host.number = host.number, 
                                              parasite.number = parasite.number, 
                                              gens = gens)
-  # what was this bit for again?
-    if(dim(replicates[[i]])[1] == 0){
-      replicates[[i]] <- data.table(Parasite = 0,
-                                    Generation = 0,
-                                    `Population size` = 0,
-                                    rep = i)
-    } else 
-      replicates[[i]]$rep <- i
+    # add replicate number to each iteration
+    replicates[[i]]$Reprod.Para.Host$Rep <- as.factor(i)
+    replicates[[i]]$Reprod.Para$Rep <- as.factor(i)
+    replicates[[i]]$Pop.Size.Para$Rep <- as.factor(i)
   }
-  # bind all the lists together!
-  res <- rbindlist(l = replicates, fill = TRUE)
-  res[Parasite > 0]
+  
+  Reprod.Para.Host <- lapply(replicates, "[[", 1)
+  Reprod.Para <- lapply(replicates, "[[", 2)
+  Pop.Size.Para <- lapply(replicates, "[[", 3)
+  
+  res <- list(Reprod.Para.Host.dyn = rbindlist(Reprod.Para.Host),
+              Reprod.Para.dyn = rbindlist(Reprod.Para),
+              Pop.Size.Para.dyn = rbindlist(Pop.Size.Para))
+  
 }
