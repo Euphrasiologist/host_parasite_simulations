@@ -27,6 +27,9 @@
 #'    parasite.number = c(1, 1, 1), 
 #'    gens = 100)
 
+# also these broken lines?! When a parasite goes extinct, it should stay extinct..?
+
+
 manyhost_manyparasite <- function(field.size, 
                                   interaction.matrix, 
                                   host.number, 
@@ -60,8 +63,6 @@ manyhost_manyparasite <- function(field.size,
   # parasite matrix
   P <- sample(x = c(rep(0,fz-sum(parasite.number)), rep(1:dim(interaction.matrix)[2], parasite.number)), size = fz, replace = FALSE)
   P <- matrix(data = P, sqrt(fz), sqrt(fz), byrow = TRUE)
-  
-  # these need to be changed.
   
   # distribution of parasites at each generation
   mats <- list()
@@ -101,6 +102,7 @@ manyhost_manyparasite <- function(field.size,
         ###################################
     
     # to get the desired interaction values for the generation j
+    # first column is the parasite species second column is the host species
     select <- matrix(c(mats[[j-1]], H), ncol = 2)
     # to get the parasites for generation j+1
     Pop.size <- vector(length = dim(select)[1])
@@ -118,14 +120,16 @@ manyhost_manyparasite <- function(field.size,
       
       for(i in 1:dim(select)[1]){
         # # if column 1, row i is zero, popsize is zero. OR if the second column (host presence) is zero.
-        if(select[i,1] == 0 | length(interaction.matrix[select[i,2]]) == 0){
+        if(select[i,1] == 0 | select[i,2] == 0){
           Pop.size[i] <- 0
-        } else
+        } else 
+          if(select[i,1] > 0 & select[i,2] > 0){
           # population size is the value in the interaction matrix. 
-          Pop.size[i]<- interaction.matrix[select[i,2]]
-        # not totally happy about this. But I think it works.
-        Host.parasite[i] <- paste(dimnames(interaction.matrix)[[2]], unlist(dimnames(interaction.matrix))[select[i,2]], sep = ", ")
-      }
+          Pop.size[i] <- interaction.matrix[select[i,2]]
+          # not totally happy about this. But I think it works.
+          Host.parasite[i] <- paste(dimnames(interaction.matrix)[[2]], unlist(dimnames(interaction.matrix))[select[i,2]], sep = ", ")
+          }
+        }
       
     } else
       
@@ -147,7 +151,7 @@ manyhost_manyparasite <- function(field.size,
     } else
       
       # little worried about whether this bit makes sense?
-      # More than one parasite and one host. Can we generalise this to
+      # More than one parasite and one host. 
       if(ncol(interaction.matrix) > 1 & nrow(interaction.matrix) > 1){
         # for switch argument later
         type <- 3
@@ -163,14 +167,14 @@ manyhost_manyparasite <- function(field.size,
             # population size is the value in the interaction matrix
             Pop.size[i]<-interaction.matrix[select[i,2], select[i,1]]
             # name of the host parasite pair
-            Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,2], select[i,1], drop = FALSE])), collapse = ", ")
+            Host.parasite[i] <- paste(dimnames(interaction.matrix)[[2]][select[i,1]], dimnames(interaction.matrix)[[1]][select[i,2]], sep = ", ")
           } else
             # if number of hosts is equal to number of parasites
             if(ncol(interaction.matrix) == nrow(interaction.matrix)){
               # population size is the value in the interaction matrix
               Pop.size[i]<-interaction.matrix[select[i,1], select[i,2]]
               # name of the host parasite pair
-              Host.parasite[i] <- paste(unlist(dimnames(interaction.matrix[select[i,1], select[i,2], drop = FALSE])), collapse = ", ")
+              Host.parasite[i] <- paste(dimnames(interaction.matrix)[[2]][select[i,1]], dimnames(interaction.matrix)[[1]][select[i,2]], sep = ", ")
             }
           
       }
@@ -195,8 +199,9 @@ manyhost_manyparasite <- function(field.size,
     # but we also want total parasite number per generation
     mat4 <- mat3[, .(Host.parasite = switch(type,
                                             gsub(", .*", "", Host.parasite), # for one parasite multiple hosts
-                                            gsub(", .*", "", Host.parasite), # for one host multiple parasites, below is multiple of both.
-                                            gsub(".*, ", "", Host.parasite)), gens, Pop.size.total)][, .(Total.parasite.number = sum(Pop.size.total)), by = .(Host.parasite, gens)][order(Host.parasite)]
+                                            gsub(", .*", "", Host.parasite), # for one host multiple parasites
+                                            gsub(".*, ", "", Host.parasite)), # many host many parasite
+                     gens, Pop.size.total)][, .(Total.parasite.number = sum(Pop.size.total)), by = .(Host.parasite, gens)][order(Host.parasite)]
     mat4$Host.parasite <- as.factor(mat4$Host.parasite)
     # save this
     pz[[j]] <- mat4
