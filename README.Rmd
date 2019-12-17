@@ -78,7 +78,7 @@ int.mat <- matrix(c(1,2,3), 3, 1, dimnames = list(c("Host 1", "Host 2", "Host 3"
 
 sim3 <- manyhost_manyparasite(field.size = 25^2, interaction.matrix = int.mat, host.number = c(200,200, 200) , parasite.number = 10, gens = 100)
 
-ggplot(sim3[[1]], aes(x = as.numeric(Generation), y = `Population Size`, group = `Host-Parasite`))+ geom_line(aes(colour = `Host-Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
+ggplot(sim3[[1]], aes(x = as.numeric(Generation), y = Seed, group = `Host-Parasite`))+ geom_line(aes(colour = `Host-Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Seed output")
   
 ```
 

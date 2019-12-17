@@ -1,7 +1,7 @@
 Simulating host parasite dynamics
 ================
 Max R Brown
-09 December, 2019
+17 December, 2019
 
 I am completely new to modelling host-parasite dynamics. I just thought
 it would be interesting to do, as I have been investigating this with
@@ -87,13 +87,13 @@ sim1 <- manyhost_manyparasite(field.size = 25^2, interaction.matrix = matrix(3, 
 sim1.2 <- setDT(sim1[[3]])
 
 head(sim1.2)
-#>    Population Size   Parasite Generation
-#> 1:              15 Parasite 1          1
-#> 2:              36 Parasite 1          2
-#> 3:              72 Parasite 1          3
-#> 4:             139 Parasite 1          4
-#> 5:             260 Parasite 1          5
-#> 6:             400 Parasite 1          6
+#>      Parasite Generation Population Size
+#> 1: Parasite 1          1              12
+#> 2: Parasite 1          2              22
+#> 3: Parasite 1          3              51
+#> 4: Parasite 1          4              94
+#> 5: Parasite 1          5             185
+#> 6: Parasite 1          6             359
 ```
 
 A plot can then be generated using the
@@ -126,7 +126,7 @@ int.mat <- matrix(c(1,2,3), 3, 1, dimnames = list(c("Host 1", "Host 2", "Host 3"
 
 sim3 <- manyhost_manyparasite(field.size = 25^2, interaction.matrix = int.mat, host.number = c(200,200, 200) , parasite.number = 10, gens = 100)
 
-ggplot(sim3[[1]], aes(x = as.numeric(Generation), y = `Population Size`, group = `Host-Parasite`))+ geom_line(aes(colour = `Host-Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
+ggplot(sim3[[1]], aes(x = as.numeric(Generation), y = Seed, group = `Host-Parasite`))+ geom_line(aes(colour = `Host-Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Seed output")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -149,7 +149,7 @@ int.mat <- matrix(c(10,9,9), 1, 3, dimnames = list(c("Host 1"), c("Parasite 1", 
 sim4 <- manyhost_manyparasite(field.size = 40^2, interaction.matrix = int.mat, host.number = c(1000), parasite.number = c(200,200,200), gens = 100)
 
 ggplot(sim4$Pop.Size.Para, aes(x = as.numeric(Generation), y = `Population Size`, group = `Parasite`))+ geom_line(aes(colour = `Parasite`)) + theme_bw() + xlab(label = "Generations") + ylab(label = "Population Size")
-#> Warning: Removed 93 rows containing missing values (geom_path).
+#> Warning: Removed 80 rows containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->

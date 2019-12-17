@@ -19,7 +19,9 @@ manyhost_manyparasite(field.size, interaction.matrix, host.number,
 \item{gens}{number of generations to run the model for.}
 }
 \value{
-a list of the parasite dynamics, spatial structure and the host matrix?
+a list of (1) reproductive output of parasite-host pair per generation
+                  (2) reproductive output of parasite per generation and
+                  (3) population size of each parasite in the current generation
 }
 \description{
 Take a host grid containing a number of hosts with some benefit to the parasite (randomly spaced, but fixed).
@@ -27,8 +29,11 @@ Then overlay a parasite grid contaning some parasites (randomly spaced).
 If hosts and parasites co-occur, the parasite will reproduce. Cumulative offspring then randomly overlaid on grid.
 }
 \details{
-Model assumes (1) that hosts are fixed in position and perennial, and are unaffected by parasitism.
-  (2) no effect on parasite of nearby hosts, (3) parasites seed randomly over the field, (4) all parasites survive to end of generation,
+Model assumes:
+  (1) that hosts are fixed in position and perennial, and are unaffected by parasitism.
+  (2) no effect on parasite of nearby hosts, 
+  (3) parasites seed randomly over the field, 
+  (4) all parasites survive to end of generation,
   (5) parasites do not produce any offspring without a host, and all parasites with a host reproduce and (6) no host independent mortality of parasites
 }
 \examples{
@@ -36,9 +41,9 @@ Model assumes (1) that hosts are fixed in position and perennial, and are unaffe
 # say I have three host species and three parasite species.
 int.mat <- matrix(c(1,1,1,2,2,2,3,3,3), 3, 3, dimnames = list(c("C.cristatus", "L.corniculatus", "P.lanceolata"), c("E.vigursii", "E.anglica", "E.micrantha")))
 
-manyhost_manyparasite(field.size = 100^2, 
+manyhost_manyparasite(field.size = 25, 
    interaction.matrix = int.mat, 
-   host.number = c(3000, 3000, 3000), 
-   parasite.number = c(1, 1, 1), 
+   host.number = c(8,8,8), 
+   parasite.number = c(2, 2, 2), 
    gens = 100)
 }
