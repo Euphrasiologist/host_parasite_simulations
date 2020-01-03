@@ -26,11 +26,11 @@
 #' # say I have three host species and three parasite species.
 #' int.mat <- matrix(c(1,1,1,2,2,2,3,3,3), 3, 3, dimnames = list(c("C.cristatus", "L.corniculatus", "P.lanceolata"), c("E.vigursii", "E.anglica", "E.micrantha")))
 #' 
-#' manyhost_manyparasite(field.size = 25, 
-#'    interaction.matrix = int.mat, 
-#'    host.number = c(8,8,8), 
-#'    parasite.number = c(2, 2, 2), 
-#'    gens = 100)
+#' sim <- manyhost_manyparasite(field.size = 25,
+#'                              interaction.matrix = int.mat,
+#'                              host.number = c(8,8,8),
+#'                              parasite.number = c(2, 2, 2),
+#'                              gens = 100)
 
 manyhost_manyparasite <- function(field.size,
                                   interaction.matrix,
@@ -204,10 +204,42 @@ manyhost_manyparasite <- function(field.size,
   colnames(res2) <- c("Parasite", "Generation", "Seed")
   res3 <- rbindlist(pop.size)
   
-  output <- list(Reprod.Para.Host = res,
-                 Reprod.Para = res2,
-                 Pop.Size.Para = res3)
+  structure(.Data = list(Reprod.Para.Host = res,
+                        Reprod.Para = res2,
+                        Pop.Size.Para = res3),
+            class = c("HoPaSim"),
+            field = fz,
+            inmat = interaction.matrix,
+            hn = host.number,
+            pn = parasite.number,
+            g = gens)
+}
+
+#' @export
+
+print.HoPaSim <- function(x){
+  cat("Simulation of host-parasite dynamics.\n\n")
+  cat(paste("Run for", attributes(x)$g, "generations\n"))
+  cat(paste("Field size is:", attributes(x)$field), "\n")
+  cat(paste("Number of hosts is:", attributes(x)$hn[1], "\n"))
+  cat(paste("Number of parasites is:", attributes(x)$pn[1], "\n"))
+  cat(paste("Interaction matrix:\n\n"))
+  print(attributes(x)$inmat); cat("\n\n")
   
-  class(output) <- c("HoPaSim")
-  output
+  # extinction
+  if(any(is.na(x$Pop.Size.Para$`Population Size`))){
+    # at what generation did parasite go extinct?
+    dat <- x$Pop.Size.Para[, is.na(`Population Size`), by = .(Parasite, Generation)][V1 == TRUE][, .SD[1], by = .(Parasite)]
+    # print the appropriate lines
+    for(parasite in dat$Parasite){
+      cat(paste(parasite, "went extinct in generation", dat[Parasite == parasite]$Generation, "\n"))
+    }
+  } else
+    cat("No extinctions occurred.")
+}
+
+#' @export
+
+summary.HoPaSim <- function(x){
+  NULL
 }

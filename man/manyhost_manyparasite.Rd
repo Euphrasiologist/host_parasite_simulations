@@ -41,9 +41,9 @@ Model assumes:
 # say I have three host species and three parasite species.
 int.mat <- matrix(c(1,1,1,2,2,2,3,3,3), 3, 3, dimnames = list(c("C.cristatus", "L.corniculatus", "P.lanceolata"), c("E.vigursii", "E.anglica", "E.micrantha")))
 
-manyhost_manyparasite(field.size = 25, 
-   interaction.matrix = int.mat, 
-   host.number = c(8,8,8), 
-   parasite.number = c(2, 2, 2), 
-   gens = 100)
+sim <- manyhost_manyparasite(field.size = 25,
+                             interaction.matrix = int.mat,
+                             host.number = c(8,8,8),
+                             parasite.number = c(2, 2, 2),
+                             gens = 100)
 }
